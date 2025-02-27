@@ -1,0 +1,302 @@
+<div class="container-fluid">
+    <div class="card">
+      <div class="card-header">
+        <h3>Add New Rule</h3>
+      </div>
+      <form (ngSubmit)="addRow()" class="form-container">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Rule Name:</label>
+            <input
+              [(ngModel)]="newRule.ruleName"
+              name="ruleName"
+              class="form-control"
+              required
+              #ruleName="ngModel"
+            />
+            <div *ngIf="ruleName.invalid && (ruleName.dirty || ruleName.touched)" class="text-danger">
+              Rule Name is required.
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Scheduled:</label>
+            <select
+              [(ngModel)]="newRule.scheduled"
+              name="scheduled"
+              class="form-control"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Y">Yes</option>
+              <option value="N">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Active:</label>
+            <select
+              [(ngModel)]="newRule.active"
+              name="active"
+              class="form-control"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Y">Yes</option>
+              <option value="N">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Created Date:</label>
+            <input
+              type="date"
+              [(ngModel)]="newRule.createdDate"
+              name="createdDate"
+              class="form-control"
+              required
+              #createdDate="ngModel"
+            />
+            <div *ngIf="createdDate.invalid && (createdDate.dirty || createdDate.touched)" class="text-danger">
+              Created Date is required.
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Type:</label>
+            <select
+              [(ngModel)]="newRule.type"
+              name="type"
+              class="form-control"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Match">Match</option>
+              <option value="Custom">Custom</option>
+              <option value="Monitor">Monitor</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Alert:</label>
+            <select
+              [(ngModel)]="newRule.alert"
+              name="alert"
+              class="form-control"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Y">Yes</option>
+              <option value="N">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Favourite:</label>
+            <select
+              [(ngModel)]="newRule.favourite"
+              name="favourite"
+              class="form-control"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Y">Yes</option>
+              <option value="N">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group button-container">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="!newRule.ruleName || !newRule.createdDate"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3>Rule Data Table</h3>
+      </div>
+      <div class="grid-container">
+        <ag-grid-angular
+          style="width: 100%; height: 500px;"
+          class="ag-theme-alpine"
+          [rowData]="rowData"
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [rowSelection]="'multiple'"
+          [suppressRowClickSelection]="true"
+          (gridReady)="onGridReady($event)"
+        >
+        </ag-grid-angular>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Rule</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label>Rule Name:</label>
+              <input
+                [(ngModel)]="editRowData.ruleName"
+                name="ruleName"
+                class="form-control"
+                required
+                #editRuleName="ngModel"
+              />
+              <div *ngIf="editRuleName.invalid && (editRuleName.dirty || editRuleName.touched)" class="text-danger">
+                Rule Name is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Active:</label>
+              <select [(ngModel)]="editRowData.active" name="active" class="form-control">
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Type:</label>
+              <select [(ngModel)]="editRowData.type" name="type" class="form-control">
+                <option value="Match">Match</option>
+                <option value="Custom">Custom</option>
+                <option value="Monitor">Monitor</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Favourite:</label>
+              <select [(ngModel)]="editRowData.favourite" name="favourite" class="form-control">
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Scheduled:</label>
+              <select [(ngModel)]="editRowData.scheduled" name="scheduled" class="form-control">
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Created Date:</label>
+              <input
+                type="date"
+                [(ngModel)]="editRowData.createdDate"
+                name="createdDate"
+                class="form-control"
+                required
+                #editCreatedDate="ngModel"
+              />
+              <div *ngIf="editCreatedDate.invalid && (editCreatedDate.dirty || editCreatedDate.touched)" class="text-danger">
+                Created Date is required.
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Alert:</label>
+              <select [(ngModel)]="editRowData.alert" name="alert" class="form-control">
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="updateRow()"
+            [disabled]="!editRowData.ruleName || !editRowData.createdDate"
+          >
+            Update
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewModalLabel">View Rule</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label>Rule Name:</label>
+              <input
+                [(ngModel)]="viewRowData.ruleName"
+                name="ruleName"
+                class="form-control"
+                readonly
+              />
+            </div>
+            <div class="form-group">
+              <label>Active:</label>
+              <input
+                [(ngModel)]="viewRowData.active"
+                name="active"
+                class="form-control"
+                readonly
+              />
+            </div>
+            <div class="form-group">
+              <label>Type:</label>
+              <input
+                [(ngModel)]="viewRowData.type"
+                name="type"
+                class="form-control"
+                readonly
+              />
+            </div>
+            <div class="form-group">
+              <label>Favourite:</label>
+              <input
+                [(ngModel)]="viewRowData.favourite"
+                name="favourite"
+                class="form-control"
+                readonly
+              />
+            </div>
+            <div class="form-group">
+              <label>Scheduled:</label>
+              <input
+                [(ngModel)]="viewRowData.scheduled"
+                name="scheduled"
+                class="form-control"
+                readonly
+              />
+            </div>
+            <div class="form-group">
+              <label>Created Date:</label>
+              <input
+                type="date"
+                [(ngModel)]="viewRowData.createdDate"
+                name="createdDate"
+                class="form-control"
+                readonly
+              />
+            </div>
+            <div class="form-group">
+              <label>Alert:</label>
+              <input
+                [(ngModel)]="viewRowData.alert"
+                name="alert"
+                class="form-control"
+                readonly
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
